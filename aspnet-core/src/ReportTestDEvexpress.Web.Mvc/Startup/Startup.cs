@@ -24,6 +24,7 @@ using Newtonsoft.Json.Serialization;
 using DevExpress.AspNetCore.Reporting;
 using DevExpress.AspNetCore;
 using DevExpress.AspNetCore.Reporting.WebDocumentViewer;
+using ReportTestDEvexpress.Web.Controllers;
 
 namespace ReportTestDEvexpress.Web.Startup
 {
@@ -41,6 +42,7 @@ namespace ReportTestDEvexpress.Web.Startup
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDevExpressControls();
+            services.AddTransient<CustomWebDocumentViewerController>();
             services.ConfigureReportingServices(configurator => {
                 configurator.ConfigureWebDocumentViewer(viewerConfigurator => {
                     viewerConfigurator.UseCachedReportSourceBuilder();
@@ -54,7 +56,7 @@ namespace ReportTestDEvexpress.Web.Startup
                         options.Filters.Add(new AbpAutoValidateAntiforgeryTokenAttribute());
                     }
                 )
-                .AddRazorRuntimeCompilation()
+                //.AddRazorRuntimeCompilation()
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = new AbpMvcContractResolver(IocManager.Instance)

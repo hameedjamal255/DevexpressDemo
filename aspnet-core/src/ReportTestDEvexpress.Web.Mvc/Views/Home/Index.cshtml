@@ -6,48 +6,26 @@
     ViewBag.CurrentPageName = PageNames.Home;
     Layout = null;
 }
-
-@*@section scripts
-{
-    <environment names="Development">
-        <link rel="stylesheet" href="~/css/thirdparty.bundle.css" />
-        <script src="~/js/thirdparty.bundle.js"></script>
-        <link rel="stylesheet" href="~/css/viewer.part.bundle.css" />
-        <script src="~/js/viewer.part.bundle.js"></script>
-    </environment>
-
-    <environment names="Staging,Production">
-       
-    </environment>
-}*@
   <link rel="stylesheet" href="~/css/thirdparty.bundle.css" />
         <script src="~/js/thirdparty.bundle.js"></script>
         <link rel="stylesheet" href="~/css/viewer.part.bundle.css" />
-        <script src="~/js/viewer.part.bundle.js"></script>@*
-
-@Html.DevExpress().WebDocumentViewer("DocumentViewer").Height("1000px").Bind(new TestReport())*@
-
-
-
+        <script src="~/js/viewer.part.bundle.js"></script>
 @functions{
 public string GetAntiXsrfRequestToken(){
  return Xsrf.GetAndStoreTokens(Context).RequestToken;
 }
 }
-
 <script type="text/javascript">
-
 function SetupJwt(bearerToken,xsrf)
 {
 
   DevExpress.Analytics.Utils.ajaxSetup.ajaxSettings={
    headers:{
      //'Authorization': 'Bearer ' + bearerToken,'
-    'RequestVerificationToken':xsrf
+    'X- XSRF-TOKEN':xsrf
  }
 };
 }
-
 function AttachXSRFToken_OnExport(args,xsrf)
 {
 args.FormData["_RequestVerificationToken"]=xsrf;
@@ -63,11 +41,10 @@ function OnViewerExport(_s,e){
 AttachXSRFToken_OnExport(e,"@GetAntiXsrfRequestToken()");
 }
 </script>
-
 <input type="hidden" id="RequestVerificationToken" name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
-
 
     @{ var viewerRender=Html.DevExpress().WebDocumentViewer("DocumentViewer").ClientSideEvents(x=>{x.BeforeRender("WebDocumentViewer_BeforeRender");x.OnExport("OnViewerExport");}).Height("1000px").Bind(new TestReport());
 
         @viewerRender.RenderHtml()
+        @viewerRender.RenderScripts()
     }
